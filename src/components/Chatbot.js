@@ -109,6 +109,7 @@ function Chatbot() {
               <CloseIcon className="icon" onClick={toggleChatbot} />
             </div>
           </div>
+          {accessGranted && <p className="admin-access-message">Admin access granted</p>} {/* Add this line */}
 
           <div className="chat-body" ref={chatBodyRef}>
             {showDeveloperConsole ? (
