@@ -74,7 +74,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
     try {
       console.log("Sending preprocessing request...");
 
-      const response = await fetch("https://13.60.97.75:8000/preprocess", {
+      const response = await fetch("http://13.60.34.232:8000/preprocess", {
         method: "POST",
         mode: "cors",  // Ensure CORS mode is enabled
         body: formData,
@@ -105,7 +105,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
   
     try {
       // Select vector database
-      const vectordbResponse = await fetch("https://13.60.97.75:8000/select_vectordb", {
+      const vectordbResponse = await fetch("http://13.60.34.232:8000/select_vectordb", {
         method: "POST",
         mode: "cors",  // Ensure CORS mode is enabled
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -116,7 +116,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
       await vectordbResponse.json();
   
       // Select chat model
-      const chatModelResponse = await fetch("https://13.60.97.75:8000/select_chat_model", {
+      const chatModelResponse = await fetch("http://13.60.34.232:8000/select_chat_model", {
         method: "POST",
         mode: "cors",  // Ensure CORS mode is enabled
         headers: { "Content-Type": "application/x-www-form-urlencoded" },

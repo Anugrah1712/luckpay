@@ -72,7 +72,7 @@ function Chatbot() {
     setInputText("");
 
     try {
-      const response = await fetch("https://13.60.97.75:8000/chat", {
+      const response = await fetch("http://13.60.34.232:8000/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
