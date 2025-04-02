@@ -74,6 +74,7 @@ function Chatbot() {
     try {
       const response = await fetch("http://13.60.34.232:8000/chat", {
         method: "POST",
+        mode: "cors",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
