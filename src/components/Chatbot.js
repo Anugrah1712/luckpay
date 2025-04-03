@@ -72,9 +72,8 @@ function Chatbot() {
     setInputText("");
 
     try {
-      const response = await fetch("https://rag-chatbot-web.shop/chat", {
+      const response = await fetch("http://rag-chatbot-web.shop/chat", {
         method: "POST",
-        mode: "cors",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
@@ -110,7 +109,6 @@ function Chatbot() {
               <CloseIcon className="icon" onClick={toggleChatbot} />
             </div>
           </div>
-          {accessGranted && <p className="admin-access-message">Admin access granted</p>} {/* Add this line */}
 
           <div className="chat-body" ref={chatBodyRef}>
             {showDeveloperConsole ? (
