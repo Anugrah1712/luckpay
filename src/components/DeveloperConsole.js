@@ -114,7 +114,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
       await vectordbResponse.json();
   
       // Select chat model
-      const chatModelResponse = await fetch("http://rag-chatbot-web.shop/select_chat_model", {
+      const chatModelResponse = await fetch("https://rag-chatbot-web.shop/select_chat_model", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ chat_model: selectedChatModel }),

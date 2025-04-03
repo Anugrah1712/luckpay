@@ -72,7 +72,7 @@ function Chatbot() {
     setInputText("");
 
     try {
-      const response = await fetch("http://rag-chatbot-web.shop/chat", {
+      const response = await fetch("https://rag-chatbot-web.shop/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
