@@ -31,6 +31,8 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
     "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
     "scb10x/scb10x-llama3-typhoon-v1-5-8b-instruct",
     "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+    "OpenAI/ChatGPT",               // ✅ New ChatGPT Option
+    "Google/Gemini-Pro" 
   ];
 
   const handleDocumentUpload = (event) => {

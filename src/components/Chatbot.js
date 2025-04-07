@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SettingsIcon from "@mui/icons-material/Settings";
 import DeveloperConsole from "./DeveloperConsole";
 import SendIcon from "@mui/icons-material/Send";
-import RestoreIcon from "@mui/icons-material/Restore"; // Import Reset Icon
+import RestoreIcon from "@mui/icons-material/Restore";
 
 function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,33 +18,29 @@ function Chatbot() {
     { text: "How can I help you today?", sender: "bot" },
   ]);
   const [inputText, setInputText] = useState("");
+  const [isBotResponding, setIsBotResponding] = useState(false);
   const chatBodyRef = useRef(null);
 
-  // Auto-scroll chat body when messages update
   useEffect(() => {
     if (chatBodyRef.current) {
       chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Toggle chatbot visibility
   const toggleChatbot = () => {
     setIsOpen((prev) => !prev);
     setShowSettings(false);
     setShowDeveloperConsole(false);
   };
 
-  // Open chatbot directly
   const openChatbot = () => {
     setIsOpen(true);
   };
 
-  // Handle settings button click
   const handleSettingsClick = () => {
     setShowSettings(true);
   };
 
-  // Reset chat history
   const handleResetHistory = () => {
     setMessages([
       { text: "Hello! 👋", sender: "bot" },
@@ -52,7 +48,6 @@ function Chatbot() {
     ]);
   };
 
-  // Handle admin key verification
   const handleAdminSubmit = () => {
     if (adminKey === "admin123") {
       setAccessGranted(true);
@@ -63,13 +58,13 @@ function Chatbot() {
     }
   };
 
-  // Send user message to chatbot
   const handleSendMessage = async () => {
-    if (inputText.trim() === "") return;
+    if (inputText.trim() === "" || isBotResponding) return;
 
     const newMessages = [...messages, { text: inputText, sender: "user" }];
     setMessages(newMessages);
     setInputText("");
+    setIsBotResponding(true);
 
     try {
       const response = await fetch("https://rag-chatbot-web.shop/chat", {
@@ -90,6 +85,8 @@ function Chatbot() {
     } catch (error) {
       console.error("Chatbot error:", error);
       setMessages([...newMessages, { text: "Error connecting to server.", sender: "bot" }]);
+    } finally {
+      setIsBotResponding(false);
     }
   };
 
@@ -117,14 +114,11 @@ function Chatbot() {
                   setAccessGranted(false);
                   setShowDeveloperConsole(false);
                 }}
-                openChatbot={openChatbot} // ✅ Ensure chatbot opens correctly
+                openChatbot={openChatbot}
               />
             ) : (
               messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={msg.sender === "bot" ? "bot-message" : "user-message"}
-                >
+                <div key={index} className={msg.sender === "bot" ? "bot-message" : "user-message"}>
                   {msg.text}
                 </div>
               ))
@@ -136,12 +130,23 @@ function Chatbot() {
               <input
                 type="text"
                 className="chat-input"
-                placeholder="Type a message..."
+                placeholder={
+                  isBotResponding
+                    ? "You can type, but wait for bot’s reply..."
+                    : "Type a message..."
+                }
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                onKeyDown={(e) => e.key === "Enter" && !isBotResponding && handleSendMessage()}
               />
-              <button className="send-button" onClick={handleSendMessage}>
+              <button
+                className="send-button"
+                onClick={handleSendMessage}
+                disabled={isBotResponding}
+                title={
+                  isBotResponding ? "Please wait for the bot to respond..." : "Send"
+                }
+              >
                 <SendIcon />
               </button>
             </div>
