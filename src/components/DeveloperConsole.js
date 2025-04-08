@@ -245,3 +245,8 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
 };
 
 export default DeveloperConsole;
+
+
+
+
+// https://rag-chatbot-web.shop

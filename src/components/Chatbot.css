@@ -93,8 +93,8 @@
   }
   
   .bot-message {
-    background: #f1f1f1;
-    color: black;
+    background: #007bff;
+    color: white;
     padding: 8px 12px;
     border-radius: 10px;
     align-self: flex-start;
@@ -102,7 +102,7 @@
   }
   
   .user-message {
-    background: #007bff;
+    background: rgb(23, 27, 76);
     color: white;
     padding: 8px 12px;
     border-radius: 10px;
@@ -232,5 +232,12 @@
     display: flex;
     align-items: center;
     gap: 5px;
+  }
+  
+  .timestamp {
+    font-size: 0.75rem;
+    color: white;
+    margin-top: 4px;
+    text-align: right;
   }
   

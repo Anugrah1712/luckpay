@@ -14,8 +14,16 @@ function Chatbot() {
   const [accessGranted, setAccessGranted] = useState(false);
   const [showDeveloperConsole, setShowDeveloperConsole] = useState(false);
   const [messages, setMessages] = useState([
-    { text: "Hello! 👋", sender: "bot" },
-    { text: "How can I help you today?", sender: "bot" },
+    {
+      text: "Hello! 👋",
+      sender: "bot",
+      timestamp: new Date(),
+    },
+    {
+      text: "How can I help you today?",
+      sender: "bot",
+      timestamp: new Date(),
+    },
   ]);
   const [inputText, setInputText] = useState("");
   const [isBotResponding, setIsBotResponding] = useState(false);
@@ -26,6 +34,16 @@ function Chatbot() {
       chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
     }
   }, [messages]);
+
+  const formatTimestamp = (date) => {
+    return date.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
 
   const toggleChatbot = () => {
     setIsOpen((prev) => !prev);
@@ -43,8 +61,16 @@ function Chatbot() {
 
   const handleResetHistory = () => {
     setMessages([
-      { text: "Hello! 👋", sender: "bot" },
-      { text: "How can I help you?", sender: "bot" },
+      {
+        text: "Hello! 👋",
+        sender: "bot",
+        timestamp: new Date(),
+      },
+      {
+        text: "How can I help you?",
+        sender: "bot",
+        timestamp: new Date(),
+      },
     ]);
   };
 
@@ -61,7 +87,13 @@ function Chatbot() {
   const handleSendMessage = async () => {
     if (inputText.trim() === "" || isBotResponding) return;
 
-    const newMessages = [...messages, { text: inputText, sender: "user" }];
+    const newUserMessage = {
+      text: inputText,
+      sender: "user",
+      timestamp: new Date(),
+    };
+
+    const newMessages = [...messages, newUserMessage];
     setMessages(newMessages);
     setInputText("");
     setIsBotResponding(true);
@@ -77,14 +109,23 @@ function Chatbot() {
 
       const data = await response.json();
 
-      if (response.ok) {
-        setMessages([...newMessages, { text: data.response, sender: "bot" }]);
-      } else {
-        setMessages([...newMessages, { text: "Error: " + data.detail, sender: "bot" }]);
-      }
+      const botMessage = {
+        text: response.ok ? data.response : "Error: " + data.detail,
+        sender: "bot",
+        timestamp: new Date(),
+      };
+
+      setMessages([...newMessages, botMessage]);
     } catch (error) {
       console.error("Chatbot error:", error);
-      setMessages([...newMessages, { text: "Error connecting to server.", sender: "bot" }]);
+      setMessages([
+        ...newMessages,
+        {
+          text: "Error connecting to server.",
+          sender: "bot",
+          timestamp: new Date(),
+        },
+      ]);
     } finally {
       setIsBotResponding(false);
     }
@@ -101,7 +142,11 @@ function Chatbot() {
           <div className="chat-header">
             <span>AI Chat Assistant</span>
             <div className="icons">
-              <RestoreIcon className="icon" onClick={handleResetHistory} titleAccess="Reset Chat History" />
+              <RestoreIcon
+                className="icon"
+                onClick={handleResetHistory}
+                titleAccess="Reset Chat History"
+              />
               <SettingsIcon className="icon" onClick={handleSettingsClick} />
               <CloseIcon className="icon" onClick={toggleChatbot} />
             </div>
@@ -119,7 +164,8 @@ function Chatbot() {
             ) : (
               messages.map((msg, index) => (
                 <div key={index} className={msg.sender === "bot" ? "bot-message" : "user-message"}>
-                  {msg.text}
+                  <div>{msg.text}</div>
+                  <div className="timestamp">{formatTimestamp(new Date(msg.timestamp))}</div>
                 </div>
               ))
             )}
@@ -143,9 +189,7 @@ function Chatbot() {
                 className="send-button"
                 onClick={handleSendMessage}
                 disabled={isBotResponding}
-                title={
-                  isBotResponding ? "Please wait for the bot to respond..." : "Send"
-                }
+                title={isBotResponding ? "Please wait for the bot to respond..." : "Send"}
               >
                 <SendIcon />
               </button>
