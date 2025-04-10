@@ -220,3 +220,25 @@ ul li {
 .url-input-container .remove-btn {
   margin-left: 10px; /* Add spacing between input and remove button */
 }
+
+.message-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.speaker-button {
+  height: 5px;
+  width: 5px;
+  background: none;
+  border: none;
+  color: #f8f4f4;
+  cursor: pointer;
+  padding: 2px;
+  transition: color 0.2s ease;
+}
+
+.speaker-button:hover {
+  color: #000;
+}

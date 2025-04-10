@@ -31,8 +31,8 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
     "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
     "scb10x/scb10x-llama3-typhoon-v1-5-8b-instruct",
     "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
-    "OpenAI/ChatGPT",               // ✅ New ChatGPT Option
-    "Google/Gemini-Pro" 
+    "OpenAI/ChatGPT",                               // ✅ New ChatGPT Option
+    "Google/Gemini" 
   ];
 
   const handleDocumentUpload = (event) => {
@@ -76,7 +76,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
     try {
       console.log("Sending preprocessing request...");
 
-      const response = await fetch("https://rag-chatbot-web.shop/preprocess", {
+      const response = await fetch("http://127.0.0.1:8000/preprocess", {
         method: "POST",
         body: formData,
       });
@@ -106,7 +106,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
   
     try {
       // Select vector database
-      const vectordbResponse = await fetch("https://rag-chatbot-web.shop/select_vectordb", {
+      const vectordbResponse = await fetch("http://127.0.0.1:8000/select_vectordb", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ vectordb: selectedVectorDB }),
@@ -116,7 +116,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
       await vectordbResponse.json();
   
       // Select chat model
-      const chatModelResponse = await fetch("https://rag-chatbot-web.shop/select_chat_model", {
+      const chatModelResponse = await fetch("http://127.0.0.1:8000/select_chat_model", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ chat_model: selectedChatModel }),

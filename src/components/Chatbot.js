@@ -6,6 +6,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import DeveloperConsole from "./DeveloperConsole";
 import SendIcon from "@mui/icons-material/Send";
 import RestoreIcon from "@mui/icons-material/Restore";
+import MicIcon from "@mui/icons-material/Mic";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 
 function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,14 +29,44 @@ function Chatbot() {
   ]);
   const [inputText, setInputText] = useState("");
   const [isBotResponding, setIsBotResponding] = useState(false);
-  const chatBodyRef = useRef(null);
+  const [isRecording, setIsRecording] = useState(false);
 
+  const chatBodyRef = useRef(null);
+  const recognitionRef = useRef(null);
+
+  // Auto scroll on message update
   useEffect(() => {
     if (chatBodyRef.current) {
       chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
     }
   }, [messages]);
 
+  // Setup Speech Recognition
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = "en-US";
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setInputText((prevText) => prevText + " " + transcript);
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error", event);
+      };
+
+      recognitionRef.current = recognition;
+    } else {
+      console.warn("SpeechRecognition API not supported in this browser.");
+    }
+  }, []);
+
+  // Format timestamp
   const formatTimestamp = (date) => {
     return date.toLocaleString("en-US", {
       month: "short",
@@ -43,6 +75,14 @@ function Chatbot() {
       minute: "2-digit",
       hour12: true,
     });
+  };
+
+  // Speech synthesis
+  const speakText = (text) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
   };
 
   const toggleChatbot = () => {
@@ -67,7 +107,7 @@ function Chatbot() {
         timestamp: new Date(),
       },
       {
-        text: "How can I help you?",
+        text: "How can I help you today?",
         sender: "bot",
         timestamp: new Date(),
       },
@@ -81,6 +121,20 @@ function Chatbot() {
       setShowDeveloperConsole(true);
     } else {
       alert("Incorrect Admin Key!");
+    }
+  };
+
+  const startRecording = () => {
+    if (recognitionRef.current) {
+      setIsRecording(true);
+      recognitionRef.current.start();
+    }
+  };
+
+  const stopRecording = () => {
+    if (recognitionRef.current) {
+      setIsRecording(false);
+      recognitionRef.current.stop();
     }
   };
 
@@ -99,7 +153,7 @@ function Chatbot() {
     setIsBotResponding(true);
 
     try {
-      const response = await fetch("https://rag-chatbot-web.shop/chat", {
+      const response = await fetch("http://127.0.0.1:8000/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -164,9 +218,19 @@ function Chatbot() {
             ) : (
               messages.map((msg, index) => (
                 <div key={index} className={msg.sender === "bot" ? "bot-message" : "user-message"}>
-                  <div>{msg.text}</div>
-                  <div className="timestamp">{formatTimestamp(new Date(msg.timestamp))}</div>
+                  <div className="message-content">
+                    <span>{msg.text}</span>
+                  </div>
+                  <div className="message-meta">
+                    <span className="timestamp">{formatTimestamp(new Date(msg.timestamp))}</span>
+                    {msg.sender === "bot" && (
+                      <button className="speaker-button" onClick={() => speakText(msg.text)} title="Play aloud">
+                        <VolumeUpIcon fontSize="small" />
+                      </button>
+                    )}
                 </div>
+
+              </div>
               ))
             )}
           </div>
@@ -179,12 +243,22 @@ function Chatbot() {
                 placeholder={
                   isBotResponding
                     ? "You can type, but wait for bot’s reply..."
-                    : "Type a message..."
+                    : "Type or hold mic to speak..."
                 }
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && !isBotResponding && handleSendMessage()}
               />
+              <button
+                className={`mic-button ${isRecording ? "recording" : ""}`}
+                onMouseDown={startRecording}
+                onMouseUp={stopRecording}
+                onTouchStart={startRecording}
+                onTouchEnd={stopRecording}
+                title="Hold to record"
+              >
+                <MicIcon />
+              </button>
               <button
                 className="send-button"
                 onClick={handleSendMessage}

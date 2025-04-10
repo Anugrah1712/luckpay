@@ -241,3 +241,55 @@
     text-align: right;
   }
   
+  .mic-button {
+    background-color: #0474ec;
+    height: 45px;
+    width: auto;
+    border: none;
+    cursor: pointer;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    color: white;
+    transition: color 0.3s;
+  }
+  
+  .mic-button.recording {
+    color: red;
+    animation: pulse 1s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+  
+
+  .message-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #fff;
+    margin-top: 4px;
+    justify-content: flex-end;
+  }
+  
+  .speaker-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+    justify-content: center;
+    transition: color 0.2s ease;
+  }
+  
+  .speaker-button:hover {
+    color: #ddd;
+  }
+  
