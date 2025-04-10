@@ -8,7 +8,7 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <h1 className="welcome-text">Welcome to my Website</h1>
+        <h1 className="welcome-text">Welcome to My Website</h1>
         <Chatbot />
 
         {/* Define Routes */}

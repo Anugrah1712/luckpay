@@ -41,8 +41,8 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #000; /* Black background */
-  color: #d4af37; /* Beige text */
+  background-color: #969598; /* Black background */
+  color: #020202; /* Beige text */
   font-family: "Arial", sans-serif;
   flex-direction: column;
 }
