@@ -8,6 +8,8 @@ import SendIcon from "@mui/icons-material/Send";
 import RestoreIcon from "@mui/icons-material/Restore";
 import MicIcon from "@mui/icons-material/Mic";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import PauseIcon from '@mui/icons-material/Pause';
+
 
 function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,32 +18,23 @@ function Chatbot() {
   const [accessGranted, setAccessGranted] = useState(false);
   const [showDeveloperConsole, setShowDeveloperConsole] = useState(false);
   const [messages, setMessages] = useState([
-    {
-      text: "Hello! 👋",
-      sender: "bot",
-      timestamp: new Date(),
-    },
-    {
-      text: "How can I help you today?",
-      sender: "bot",
-      timestamp: new Date(),
-    },
+    { text: "Hello! 👋", sender: "bot", timestamp: new Date() },
+    { text: "How can I help you today?", sender: "bot", timestamp: new Date() },
   ]);
   const [inputText, setInputText] = useState("");
   const [isBotResponding, setIsBotResponding] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [speakingIndex, setSpeakingIndex] = useState(null);
 
   const chatBodyRef = useRef(null);
   const recognitionRef = useRef(null);
 
-  // Auto scroll on message update
   useEffect(() => {
     if (chatBodyRef.current) {
       chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Setup Speech Recognition
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -66,7 +59,6 @@ function Chatbot() {
     }
   }, []);
 
-  // Format timestamp
   const formatTimestamp = (date) => {
     return date.toLocaleString("en-US", {
       month: "short",
@@ -77,12 +69,22 @@ function Chatbot() {
     });
   };
 
-  // Speech synthesis
-  const speakText = (text) => {
+  const handleSpeak = (text, index) => {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";
+
+    utterance.onend = () => {
+      setSpeakingIndex(null);
+    };
+
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
+    setSpeakingIndex(index);
+  };
+
+  const handlePause = () => {
+    window.speechSynthesis.cancel();
+    setSpeakingIndex(null);
   };
 
   const toggleChatbot = () => {
@@ -91,26 +93,14 @@ function Chatbot() {
     setShowDeveloperConsole(false);
   };
 
-  const openChatbot = () => {
-    setIsOpen(true);
-  };
+  const openChatbot = () => setIsOpen(true);
 
-  const handleSettingsClick = () => {
-    setShowSettings(true);
-  };
+  const handleSettingsClick = () => setShowSettings(true);
 
   const handleResetHistory = () => {
     setMessages([
-      {
-        text: "Hello! 👋",
-        sender: "bot",
-        timestamp: new Date(),
-      },
-      {
-        text: "How can I help you today?",
-        sender: "bot",
-        timestamp: new Date(),
-      },
+      { text: "Hello! 👋", sender: "bot", timestamp: new Date() },
+      { text: "How can I help you today?", sender: "bot", timestamp: new Date() },
     ]);
   };
 
@@ -153,7 +143,7 @@ function Chatbot() {
     setIsBotResponding(true);
 
     try {
-      const response = await fetch("https://rag-chatbot-web.shop/chat", {
+      const response = await fetch("http://127.0.0.1:8000/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -196,11 +186,7 @@ function Chatbot() {
           <div className="chat-header">
             <span>AI Chat Assistant</span>
             <div className="icons">
-              <RestoreIcon
-                className="icon"
-                onClick={handleResetHistory}
-                titleAccess="Reset Chat History"
-              />
+              <RestoreIcon className="icon" onClick={handleResetHistory} titleAccess="Reset Chat History" />
               <SettingsIcon className="icon" onClick={handleSettingsClick} />
               <CloseIcon className="icon" onClick={toggleChatbot} />
             </div>
@@ -224,13 +210,27 @@ function Chatbot() {
                   <div className="message-meta">
                     <span className="timestamp">{formatTimestamp(new Date(msg.timestamp))}</span>
                     {msg.sender === "bot" && (
-                      <button className="speaker-button" onClick={() => speakText(msg.text)} title="Play aloud">
-                        <VolumeUpIcon fontSize="small" />
-                      </button>
+                      <>
+                        <button
+                          className="speaker-button"
+                          onClick={() => handleSpeak(msg.text, index)}
+                          title="Play aloud"
+                          style={{ display: speakingIndex === index ? "none" : "inline-block" }}
+                        >
+                          <VolumeUpIcon fontSize="small" />
+                        </button>
+                        <button
+                          className="pause-button"
+                          onClick={handlePause}
+                          title="Pause"
+                          style={{ display: speakingIndex === index ? "inline-block" : "none" }}
+                        >
+                          <PauseIcon fontSize="small" />
+                        </button>
+                      </>
                     )}
+                  </div>
                 </div>
-
-              </div>
               ))
             )}
           </div>
@@ -240,11 +240,7 @@ function Chatbot() {
               <input
                 type="text"
                 className="chat-input"
-                placeholder={
-                  isBotResponding
-                    ? "You can type, but wait for bot’s reply..."
-                    : "Type or hold mic to speak..."
-                }
+                placeholder={isBotResponding ? "You can type, but wait for bot’s reply..." : "Type or hold mic to speak..."}
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && !isBotResponding && handleSendMessage()}

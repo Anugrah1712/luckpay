@@ -102,7 +102,7 @@
   }
   
   .user-message {
-    background: rgb(23, 27, 76);
+    background: rgb(94, 94, 96);
     color: white;
     padding: 8px 12px;
     border-radius: 10px;
@@ -115,7 +115,7 @@
     display: flex;
     align-items: center;
     padding: 10px;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #fffbfb;
     background: white;
     gap: 10px;
   }
@@ -272,8 +272,9 @@
     gap: 6px;
     font-size: 12px;
     color: #fff;
-    margin-top: 4px;
     justify-content: flex-end;
+    flex-wrap: nowrap; 
+    white-space: nowrap;
   }
   
   .speaker-button {
@@ -281,10 +282,11 @@
     border: none;
     color: #fff;
     cursor: pointer;
-    padding: 2px;
+    padding: 0px;
     display: flex;
     align-items: center;
-    margin-left: 5px;
+    margin-right: 10px;
+    margin-bottom: 2px;
     justify-content: center;
     transition: color 0.2s ease;
   }
@@ -293,3 +295,18 @@
     color: #ddd;
   }
   
+  .pause-button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    height: auto;
+    width: auto;
+    justify-content: center;
+    box-shadow: none;
+    text-shadow: none;
+  }
+
+  .pause-button:hover{
+    color: rgb(14, 14, 14);
+  }
