@@ -13,6 +13,8 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
   const [isPreprocessed, setIsPreprocessed] = useState(false);
   const [selectedVectorDB, setSelectedVectorDB] = useState("");
   const [selectedChatModel, setSelectedChatModel] = useState("");
+  const [customPrompt, setCustomPrompt] = useState("");
+
 
   const embeddingModels = [
     "all-MiniLM-L6-v2",
@@ -114,12 +116,14 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
   
       if (!vectordbResponse.ok) throw new Error("Vector database selection failed.");
       await vectordbResponse.json();
-  
+      
+      const formData = new FormData();
+      formData.append("custom_prompt", customPrompt);
       // Select chat model
       const chatModelResponse = await fetch("http://127.0.0.1:8000/select_chat_model", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ chat_model: selectedChatModel }),
+        body: new URLSearchParams({ chat_model: selectedChatModel}),
       });
   
       if (!chatModelResponse.ok) throw new Error("Chat model selection failed.");
@@ -191,6 +195,18 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
           </div>
 
           <div className="section">
+            <label>Select Vector Database:</label>
+            <select value={selectedVectorDB} onChange={(e) => setSelectedVectorDB(e.target.value)}>
+              <option value="">Select Database</option>
+              {vectorDBs.map((db) => (
+                <option key={db} value={db}>
+                  {db}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="section">
             <label>Select Embedding Model:</label>
             <select value={selectedEmbeddingModel} onChange={(e) => setSelectedEmbeddingModel(e.target.value)}>
               <option value="">Select Model</option>
@@ -208,21 +224,20 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
         </>
       )}
 
-      {/* Step 2: Select Vector DB & Chat Model (Only show after preprocessing) */}
+      {/* Step 2:Update Prompts & select Chat Model (Only show after preprocessing) */}
       {isPreprocessed && (
         <>
           <h3>✅ Preprocessing completed!</h3>
 
           <div className="section">
-            <label>Select Vector Database:</label>
-            <select value={selectedVectorDB} onChange={(e) => setSelectedVectorDB(e.target.value)}>
-              <option value="">Select Database</option>
-              {vectorDBs.map((db) => (
-                <option key={db} value={db}>
-                  {db}
-                </option>
-              ))}
-            </select>
+            <label>Custom Prompt Template (Optional):</label>
+            <textarea
+              value={customPrompt}
+              onChange={(e) => setCustomPrompt(e.target.value)}
+              rows={10}
+              placeholder="Enter a custom prompt template here..."
+              style={{ width: "100%", fontFamily: "monospace" }}
+             />
           </div>
 
           <div className="section">
