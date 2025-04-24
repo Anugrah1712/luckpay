@@ -127,7 +127,7 @@ function Chatbot() {
       recognitionRef.current.stop();
     }
   };
-
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const handleSendMessage = async () => {
     if (inputText.trim() === "" || isBotResponding) return;
 
@@ -143,7 +143,7 @@ function Chatbot() {
     setIsBotResponding(true);
 
     try {
-      const response = await fetch("https://rag-chatbot-web.shop/chat", {
+      const response = await fetch(`${backendUrl}/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

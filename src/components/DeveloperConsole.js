@@ -78,7 +78,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
     try {
       console.log("Sending preprocessing request...");
 
-      const response = await fetch("https://rag-chatbot-web.shop/preprocess", {
+      const response = await fetch(`${backendUrl}/preprocess`, {
         method: "POST",
         body: formData,
       });
@@ -99,7 +99,8 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
       setIsProcessing(false);
     }
   };
-
+  
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const handleFinalConfiguration = async () => {
     if (!selectedVectorDB || !selectedChatModel) {
       console.error("Please select both vector database and chat model.");
@@ -108,7 +109,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
   
     try {
       // Select vector database
-      const vectordbResponse = await fetch("https://rag-chatbot-web.shop/select_vectordb", {
+      const vectordbResponse = await fetch(`${backendUrl}/select_vectordb`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ vectordb: selectedVectorDB }),
@@ -121,7 +122,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
       formData.append("custom_prompt", customPrompt);
       formData.append("chat_model", selectedChatModel); // Add selected chat model to the formData
 
-      const chatModelResponse = await fetch("https://rag-chatbot-web.shop/select_chat_model", {
+      const chatModelResponse = await fetch(`${backendUrl}/select_chat_model`, {
         method: "POST",
         body: formData, // Send the formData with both custom_prompt and chat_model
       });
