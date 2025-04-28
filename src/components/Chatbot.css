@@ -69,14 +69,17 @@
   }
   
   .chat-header .icons {
+
     display: flex;
     gap: 10px;
   }
   
   .chat-header .icon {
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out;
-  }
+  cursor: pointer;
+  font-size: 24px; /* ✅ force size for all icons */
+  transition: transform 0.2s ease-in-out;
+}
+
   
   .chat-header .icon:hover {
     transform: scale(1.2);

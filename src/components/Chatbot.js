@@ -1,3 +1,5 @@
+// Chatbot.js
+
 import React, { useState, useEffect, useRef } from "react";
 import "./Chatbot.css";
 import "./DeveloperConsole.css";
@@ -5,7 +7,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SettingsIcon from "@mui/icons-material/Settings";
 import DeveloperConsole from "./DeveloperConsole";
 import SendIcon from "@mui/icons-material/Send";
-import RestoreIcon from "@mui/icons-material/Restore";
+import { AiOutlineReload } from "react-icons/ai";
 import MicIcon from "@mui/icons-material/Mic";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import PauseIcon from '@mui/icons-material/Pause';
@@ -186,7 +188,7 @@ function Chatbot() {
           <div className="chat-header">
             <span>AI Chat Assistant</span>
             <div className="icons">
-              <RestoreIcon className="icon" onClick={handleResetHistory} titleAccess="Reset Chat History" />
+              <AiOutlineReload className="icon" onClick={handleResetHistory} title="Reset Chat History" />
               <SettingsIcon className="icon" onClick={handleSettingsClick} />
               <CloseIcon className="icon" onClick={toggleChatbot} />
             </div>
