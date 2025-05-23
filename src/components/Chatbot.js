@@ -144,14 +144,16 @@ function Chatbot() {
     setInputText("");
     setIsBotResponding(true);
 
+   
     try {
-      const response = await fetch("http://127.0.0.1:8000/chat", {
+      const response = await fetch("https://datalysis.rag-chatbot-web.shop/chat", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({ prompt: inputText }),
-      });
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: inputText,
+          project_name: "datalysis-website.vercel.app",
+      }),
+    });
 
       const data = await response.json();
 
