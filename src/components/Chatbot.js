@@ -151,7 +151,7 @@ function Chatbot() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           query: inputText,
-          project_name: "www.bajajfinserv.in",
+          project_name: "https://rag-chatbot-frontend-three.vercel.app",
       }),
     });
 
