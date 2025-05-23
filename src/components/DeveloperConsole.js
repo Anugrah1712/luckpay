@@ -78,7 +78,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
     try {
       console.log("Sending preprocessing request...");
 
-      const response = await fetch(`${backendUrl}/preprocess`, {
+      const response = await fetch("http://127.0.0.1:8000/preprocess", {
         method: "POST",
         body: formData,
       });
@@ -109,7 +109,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
   
     try {
       // Select vector database
-      const vectordbResponse = await fetch(`${backendUrl}/select_vectordb`, {
+      const vectordbResponse = await fetch("http://127.0.0.1:8000/select_vectordb", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ vectordb: selectedVectorDB }),
@@ -122,7 +122,7 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
       formData.append("custom_prompt", customPrompt);
       formData.append("chat_model", selectedChatModel); // Add selected chat model to the formData
 
-      const chatModelResponse = await fetch(`${backendUrl}/select_chat_model`, {
+      const chatModelResponse = await fetch("http://127.0.0.1:8000/select_chat_model", {
         method: "POST",
         body: formData, // Send the formData with both custom_prompt and chat_model
       });
@@ -264,6 +264,5 @@ const DeveloperConsole = ({ closeConsole, openChatbot }) => {
 export default DeveloperConsole;
 
 
-
-
 // https://rag-chatbot-web.shop
+
